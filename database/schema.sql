@@ -1,0 +1,9 @@
+CREATE DATABASE IF NOT EXISTS yummy_house CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE yummy_house;
+CREATE TABLE categories (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100) NOT NULL UNIQUE);
+CREATE TABLE products (id INT AUTO_INCREMENT PRIMARY KEY, category_id INT NOT NULL, name VARCHAR(150) NOT NULL, description TEXT, price DECIMAL(10,2) NOT NULL, is_special BOOLEAN NOT NULL DEFAULT FALSE, is_available BOOLEAN NOT NULL DEFAULT TRUE, image_url VARCHAR(500), FOREIGN KEY (category_id) REFERENCES categories(id));
+CREATE TABLE customers (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(150) NOT NULL, email VARCHAR(190) NOT NULL UNIQUE, password_hash VARCHAR(255) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE orders (id INT AUTO_INCREMENT PRIMARY KEY, customer_id INT NULL, customer_name VARCHAR(150) NOT NULL, email VARCHAR(190) NOT NULL, phone VARCHAR(30) NOT NULL, fulfillment ENUM('pickup','delivery') NOT NULL, delivery_address TEXT NULL, total DECIMAL(10,2) NOT NULL, status ENUM('pending','confirmed','preparing','ready','completed','cancelled') NOT NULL DEFAULT 'pending', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(customer_id) REFERENCES customers(id));
+CREATE TABLE order_items (id INT AUTO_INCREMENT PRIMARY KEY, order_id INT NOT NULL, product_id INT NOT NULL, quantity INT NOT NULL, unit_price DECIMAL(10,2) NOT NULL, FOREIGN KEY(order_id) REFERENCES orders(id), FOREIGN KEY(product_id) REFERENCES products(id));
+INSERT INTO categories (name) VALUES ('Meals'),('Boba & Drinks'),('Asian Groceries'),('Accessories & Gifts');
+INSERT INTO products (category_id,name,description,price,is_special) VALUES (1,'Noodle Bowl','Sample menu item — replace with approved restaurant details',75.00,TRUE),(1,'Dumplings','Sample menu item',65.00,FALSE),(2,'Milk Tea','Sample drink',48.00,TRUE),(3,'Rice Paper','Sample grocery item',39.00,FALSE),(4,'Chopsticks','Sample accessory',35.00,FALSE);
